@@ -1,0 +1,642 @@
+
+Provisioning or procurring - means Renting,buying. On demand resource provisioning.
+
+cloud advantages :
+trade Capital expense(fixed expense) for variable expense(spend only what is required).
+benefit from massive economies of scale ( you can scale whenver )
+stop guessing capacity.
+go global in minutes ( deploy application in any region )
+
+AZ -> have 1 or more servers/data centers.
+Region -> may have 3 or more AZ but not all regions hava AZ.  West central US have 0 AZ.
+ex: Mumbai region 
+
+Region pairs - Paired regions are usually in the same geo (not always) but are the most logical place to store backups because they have a high speed connection. 
+The regions are atleast 300 miles away. ex: 
+West US - East US, 
+central india - south india
+brzil south - south central US ( brazil have only 1 region )
+
+
+elasticity - automated inc or dec
+scalability - ability to inc or dec 
+
+------- COMPUTE SERVICES ---------------------------------------------------------------------------------------------------------------------------------------------
+
+In corporate data center, applications are deployed to physical servers. 
+In cloud, applications are deployed in virtual servers i.e virtual machines.
+
+We can - 
+Add load balancers and auto scale VMs
+attach storage to VMs
+manage connectivity using public and private IPs.
+The main dashboard where you see all azure services is called azure portal.
+
+1) Azure VM :
+Azure customer have no access to these physical servers.
+Microsoft manage the replacement of failed server hardware and the security of the physical servers so you dont need to.
+Microsoft have no control over the applications you run on the VMs. Therefore, it is your responsibility to ensure that application data is backed up.
+Microsoft do not manage the OS you run on the VMs. Therefore, it is your responsibility to ensure that the operating systems are updated.
+Microsoft have no control over the shared folders you host on the VMs. It is your responsibility to ensure that folder permissions are configured appropriately.
+A virtual machine needs a network card, storage and a virtual network. It does not need a public IP address. In fact, most Azure VMs are private.
+
+2) Azure ScaleSets - Scalesets are groups of mactching virtual machines, managed as a single unit. You can set rules for scaling up or scaling down.
+   Scaling for Windows or Linux VMs hosted in Azure.1000 VMs can b set. Also provide load balancing btw VMs.	
+3) App services: Give your code and configuration to azure and they will run it. No access to hardware. PAAS.
+4) Azure Container Instances - single instance,quickest way to deploy container.
+5) Azure Kubernetes Service - Cluster management for VMs that run containerized services.
+6) Azure service fabric - Alternate to AKS, Azure provides its own service for container orchestration.
+6) Azure virtual desktop - Desktop version of windows that runs in cloud. available from anywhere ios, android.
+
+Serverless computing - Serverless computing enables developers to build applications faster by eliminating the need for them to manage infrastructure. 
+With serverless applications, the cloud service provider automatically provisions, scales, and manages the infrastructure required to run the code.
+In understanding the definition of server-less computing, it’s important to note that servers are still running the code.
+
+App Service - App Service enables you to build and host web applications. It is a PAAS service.
+Types of app services :
+Web apps
+API apps
+WebJobs
+Mobile apps
+
+=======AVAILABILITY===================================================================================================================================================================
+
+How to increase availability - 
+
+standard Availability - 
+99.95	 22 min
+99.99	 4.5 min
+99.999	 26 secs
+
+Availability sets : logical grouping of VMs.
+1) single instance 
+Premium SSD - 99.9%
+Standard SSD - 99.5%
+Standard HDD - 95%
+
+2) 2 or more instances  - 99.95%
+Fault domains - VMs sharing same power source
+update domains - VMs rebooted at same time
+
+3) 2 or more instances in 2 or more AZ in one azure region - 99.99%
+
+# VM Scale set - 
+Add multiple VMs, add load balancer, distribute across multiple az, auto scaling, supports 1000 VMs in 1 scale set.
+network interface  - By default VM scale set have private IP address. We can add pubic IP for VMs to connect to internet. 
+
+site recovery - To perform disaster 
+Resilience - Ability of system to provide acceptable behavior even when one or more parts of the system fail
+
+======CLOUD MODELS====================================================================================================================================================================
+
+Azure managed infrastructure or compute services:
+
+1) IAAS - Use only infrastructure from cloud provider. ex: Azure VM
+we are responsibe to run code in vm, configring load balancing, auto scaling, os ugrad n patches, availability.
+cloud provider is responsbile only for physical hardware, virtuaization, networking.
+
+2) PAAS - Use platform provided by cloud provider.
+IAAS + development and deployment environment. 
+Cloud provider is responsible for configring load balancing, auto scaling, os upgrad n patches, availability. 
+You are responsible for Configuration (of Application and Services) and Application code (if needed).
+ex: Azure App service, to deploy web applications code or docker container.
+
+3) SAAS - Database, MS office. Configuring SaaS Solution is the only responsibility that you are responsible for when using Software as a Service (SaaS) services.
+shared responsible for - infrastructure.
+
+4) serverless - azure function, cosmos db, ACI, Azure sql db serverless.
+Azure has two implementations of serverless compute:
+Azure Functions: Functions can execute code in almost any modern language.
+Azure Logic Apps: Logic apps are designed in a web-based designer and can execute logic triggered by Azure services without writing any code.
+
+========STORAGE=================================================================================================================================
+
+To add any kind of storage, we need to first create storage account.
+It gives 3 kings of storage - General prurpose V1, General prurpose V2, Blob storage.
+
+General prurpose V2 have below types:
+Azure blobs - Storage service for very large objects, such as video files, bitmaps,data disk. stores unstrcutured data, text and binary data.
+Azure files - File shares that can be accessed and managed like a file server. 
+Azure tables - stores NoSQL data in the cloud, providing a key-attribute store with a schemaless design.
+Azure queues -  data store for queuing and reliably delivering messages between applications.
+
+replication options:
+1) Locally redundant storage (LRS) - 3 copies in 1 data center in AZ1 (3:1). Least expensive and least avaiialbiltiy. 
+   For non critical data. 11 nines of durability (99.999999999%)
+2) Zone redundant storage (ZRS) - 1 copy each in AZ1,AZ2,AZ3 within region1 (1:3). For high availability. 12 nines of durability (99.9999999999%) 
+3) Geo reduntant storage(GRS) - 3 copies in AZ1 in region1 + 3 copy in  paired region2 (3:1 + 3:1). For back ups.
+4) Geo zone-reduntant storage(GZRS) - 1 copy each in AZ1,AZ2,AZ3 within region1 + region2 (1:3 + 1:3). Most expensive and most available. 
+                                      For highly critical data. 16 nines of durability (99.99999999999999%) 
+
+Acces tiers : 
+hot - fequent accessed data
+cool - rare accessed data
+
+blob storage access tiers :	
+Hot tier - store frequently accessed data. highest storage costs, lowest access costs.
+Cool tier - store in-frequently accessed data. lower storage costs and higher access costs. stored for 30 days.
+Archive tier - Data in the Archive tier should be stored for a minimum of 180 days. lowest storage cost but highest access cost. slowest of all. 
+               Need to rehydrate to access.	
+
+Data migration into Azure after storage account created - 
+Azure migrate - migration of your on-premises datacenter to Azure.  
+Data Migration Assistant - is a stand-alone tool to assess SQL Servers. It helps pinpoint potential problems blocking migration. It identifies unsupported features, new features that can benefit you after migration, and the right path for database migration.
+Azure Database Migration Service - Migrate on-premises databases to Azure VMs running SQL Server, Azure SQL Database, or SQL Managed Instances.
+Web app migration assistant. Azure App Service Migration Assistant is a standalone tool to assess on-premises websites for migration to Azure App Service. Use Migration Assistant to migrate .NET and PHP web apps to Azure.
+Azure Data Box - Use Azure Data Box products to move large amounts of offline data to Azure.
+
+File movement from on-prem to azure :
+azCopy (CMD) - AzCopy is a command-line utility that you can use to copy blobs or files to or from your storage account.
+Azure Storage Explorer - is a standalone app that provides a graphical interface to manage files and blobs in your Azure Storage Account.
+Azure File Sync - Use any protocol that's available on Windows Server to access your data locally, including SMB, NFS, and FTPS.
+
+Azure disks 
+Managed disk - azure manages the storage
+UnManaged disk - not recommended to use. Used only for rare classis scnarios.
+
+----------DATABASE---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Availability - data available whenever needed. 4 9s, 99.99%
+Durability: how long or years data can survive ? 100 or 1000 yrs
+11 9s, 99.999999999%. if you store 1 million files for 10 million years , you lose 1 file
+
+RPO - recvery point objective
+RTO - recovery time objective
+hot standby - small data loss and small downtime
+warm standby - small data loss but mudeium downtime in min
+snapshot - critical data n hit downtime in hrs
+failover completely - cache data  lost completely.
+
+relational dbs: means fixed schema ( rows,columns, tables ), for OLTP OLAP. 
+1) Azure SQL Database - Azure's hosted SQL database service is a fully managed platform as a service (PaaS) database engine. 99.99% availability. 
+   Enables you to process both relational data and non-relational data such as graphs, JSON, spatial, and XML. 
+   Deployment options: single db, elastic pool. Service tiers: standard, premium, hyperscale.
+2) Azure Db for MySQL - Fully managed and scalable MySQL relational db with high availability and security.Logical choice for existing LAMP stack applications.
+3) Azure Db for PostgreSQL - Fully managed and scalable PostgreSQL relational database with high availability and security. 
+   Deployment model - single server, flexible server, hyperscale(citus).
+
+Azure synapse analytics - OLAP db. Petabyte data, massive parallel processing. Earlier called sql dwh. Columnar storage.   
+
+Azure Cosmos DB - NoSQL db. stores data in atom-record-sequence (ARS) format. 
+Global database that automatically replicates data across multiple Azure regions. 99.999% avaialbility.
+
+Azure Cache for Redis - Fully managed service caches frequently used and static data to reduce data and application latency.
+
+=========== NETWORK SERVICES ==================================================================================================================
+
+User --> corporate network ( citrix vpn/open vpn ) --> client applications.
+User --> virtual network (cloud) --> client applications.
+
+Each virtual network is associated to 1 region only.
+we can control all in and out traffic from virtual network.
+We can connect virtual network to on-prem network using Azure vpn gateway or express route.( hybrid cloud)
+With each virtual ntwrok, we get a default subnet. We can add more subnets.
+
+1) Virtual network - emulating a phySical network. in aws we have VPC.  There is no charge for using Azure VNet; it is free of cost. 
+Standard charges are applicable for resources, such as Virtual Machines (VMs) and other products. 
+
+Subnet - sub division of virtual network that you control, has its own security rules. You can separate public and private resources using subnet.
+resources in public subnet can talk to resources in private subnet.
+NAT gateway is recommended for outbound internet access from subnet.
+You create a VM inside a subnet which is inside a Virtual network. At this time a private IP is assigned by default.
+All the resources within a Virtual network can communicate with each other. 
+If the resources in VN1 want to communicate with resources in VN2, then we use network peering. These VNs can be in different regions also.
+
+Azure DDoS Protection - is used at website level. Protects Azure-hosted applications from distributed denial of service (DDOS) attacks. 
+- Basic : default protection by azure free of cost.
+- Standard : protects from 60 different DDOS attachs. provides attack analytics, reporting, alerting, metrics.
+
+Azure Firewall - is outside virtual network. Implements high-security, high-availability firewall with unlimited scalability.
+t's used to mainly filter the traffic but not at granular level.
+incoming traffic -> firewall -> Virtual netwrok -> NSG -> Subnet(resources) -> firewall -> outgoing traffic
+
+Web Application firewall (WAF) - This firewall is for web applications. Protects from OWASP attacks.
+
+Network security groups -  within VN in front of resources. control traffic btw resources. 
+It allow you to configure multiple inbound and outbound security rules. You can allow or block traffic based on source/destination IP address, 
+protocol and port. You can restrict traffic between resources such as virtual machines and subnets.
+
+Application security group - You can use ASG to configure network security as an extension of application strcuture.
+
+Setting up communication btw VM and database -> use Private link and private end point.
+
+Defence in depth :
+Physical security layer
+Perimeter - DDoS protection
+IAM
+Network
+compute
+Application
+Data
+
+public cloud - everything on cloud.
+private cloud - everything on prem. 
+hybrid - mix of both. 
+
+How to connect on-prem with azure ( hybrid )
+1) point-to-site vpn - commn btw outside of organization(client computer) and azure vpn over internet.
+2) site-to-site vpn - links your on-prem VPN device or gateway to the Azure VPN gateway hrough an encrypted tunnel over the internet over internet.
+3) Azure ExpressRoute - For environments where you need greater bandwidth and even higher levels of security, Azure ExpressRoute is the best approach. 
+   ExpressRoute provides a dedicated private connectivity to Azure that doesn't travel over the internet.
+   Connectivity can be from an any-to-any (IP VPN) network, a point-to-point Ethernet network, or a virtual cross-connection through a connectivity 
+   provider at a colocation facility.
+
+ExpressRoute connectivity models :
+1) CloudExchange colocation
+2) Point-to-point Ethernet connection
+3) Any-to-any connection
+4) Directly from ExpressRoute sites
+
+Route network traffic - Azure routes traffic between subnets, connected virtual networks, on-premises networks, and the Internet, by default.
+You can override by using :
+1) Route tables: You can create custom route tables with routes that control where traffic is routed to for each subnet.
+2) Border gateway protocol (BGP)
+
+Connect virtual networks:
+1) Peering - You can link virtual networks together by using virtual network peering. These virtual networks can also be in separate regions.
+2) User-defined routes (UDR) - control the routing tables between subnets within a VNet, as well as between VNets.
+
+======== Resource Hierarchy =======================================================================================================================
+
+Management group -> Subscription -> Resource group -> resources
+
+At a time, one resource group can be assocaited to one subscription only.
+A resource can be part of one resource group only.
+resource group can have resources from multiple regions.
+Azure resources in one Resource Group can access resources in other Resource Groups
+
+Subscriptions:
+An azure account can have multiple subscritptions n multiple account administrators.
+25000 VMs per region per subscription.
+2 subscription cannot be merged.
+You can transfer owner of subscription.
+Each subscription can trust only one Azure AD directory.
+	
+========== IAM ======================================================================================================================================
+
+Microsoft defender for cloud - enhanced security protection
+
+Active directory(AD) - Microsofts propietary directory service.
+
+Azure active directory(AAD) - is a IAM "identity as a service" to control access to a specific app resource using multi-factor authentication.
+Azure AD can control the access of both the apps and the app resources. SLA for basic and premium services in 99.9%
+Licenses types
+- free : Can be used to synschronize on-prem directory with azure AD.
+- Premium : reset password, publish on-prem apps using AD.
+
+Passwordless - technology allows you to log in to Azure Active Directory device or application using your face, a PIN code, or a gesture.
+
+Zero trust - works on 3 principles
+1) verify explicitly - Just in time, Just enough access
+2) least privelege
+3) Assume you have been already breached.
+
+Azure AD connect - synchronize on-prem active directory with azure active directory.
+
+Who uses Azure AD ?
+IT Admin, App Developers, Users, MS 365 subscribers.
+
+Services provided by Azure AD ?
+Authentication, SSO, Application management, Device management.
+
+========== Managing cost ============================================================================================================================
+
+CapEx - 1 time payment. money spent to buy infrastructure. it is an upfront cost, which has a value that reduces over time and usually has no 
+recurring cost. ex: Deploying your own data center , Azure Reserved VM Instances 
+
+OpEx is your operating costs, the expenses to run the day-to-day business.
+There’s no upfront cost but has a recurring cost. You pay for a service or product as you use it i.e. pay-as-you-go pricing.
+
+# consumption-based model:
+No upfront costs, pay for what you use.
+fixed price - you are billed for instances irrespective of whether they are used or not.
+
+TCO - estimate the cost of migrating your on-prem workload to azure. Estimates the cost savings by comparing datacenter costs to running the 
+same workload on Azure. These costs include electricity, network maintenance, real estate, reports, hardware, employee salary, internet access.
+Autoscaling can reduce cost. Avaialbility, 99.99%. 4 min per month.
+
+Azure Pricing calculator - Estimates workload costs. If you want to move to microsoft cloud and before moving you want to check pricing 
+of each service.
+
+Azure Cost Management - another free service that helps you understand your Azure bill, manage your account and subscriptions, _
+monitor and control Azure spending, and optimize resource use. It includes scheduling Reports, Data enrichment, Budgets, Alerting, Recommendations.
+
+Resource tags  - its like adding a meta data to the resource to track who created it, which project, billing etc
+
+======== GOVERNANCE n COMPLIANCE ========================================================================================================================================
+
+Azure blueprints
+Azure policy
+Resource locks
+Service trust portal
+
+1) Azure Blueprints - What happens when your cloud starts to grow beyond just one subscription or environment? 
+   Azure policy can be applied to one subscription only. But Azure blueprints can be applied accross all subscriptions.
+   Azure Blueprints lets you deploy a new Test/Dev environment with security and compliance settings already configured. 
+   helps you with creating customized standard environments with a set of resource groups, policies, role assignments, and ARM template deployments
+
+Artifcats - Each component in the blueprint definition is known as an artifact.
+Artifacts can include things such as:
+Role assignments
+Policy assignments
+ARM templates
+Resource groups
+
+2) Azure Policy - "enforce" word will come with policy.
+- Azure Policy is a service that you use to create, assign, and manage organizational standards and to assess compliance at-scale. 
+- Azure policies enforce rules on resources so that they stay compliant with your corporate standards and service-level agreements.
+- Policies enforce tagging for resources and resource groups and restrict regions for deployed resources.
+- Prevent certain azure VM instance types from being used in resource groups. like a costly VM.
+- Azure Policy evaluates resources in Azure by comparing the properties of those resources to business rules. These business rules, 
+  described in JSON format, are known as policy definitions.several business rules can be grouped together to form a policy initiative/policySet.
+- You cn create group of policies, called 'initiative'.
+- An initiative can be assgined to multiple groups n subscriptions. An initiative can only contain policies that are located in same subscription.
+
+3) Resource Lock - As an administrator, you can lock a subscription, resource group, or resource to prevent other users in your organization 
+from accidentally deleting or modifying critical resources. The lock overrides any permissions the user might have.
+1) CanNotDelete - can read or modify, but not delete
+2) ReadOnly -  can read only, but not modify or delete.
+A recource can have multiple read or delete locks.
+Lock inheritance - When you apply a lock at a parent scope, all resources within that scope inherit the same lock. 
+
+Use of lock and RBAC(Role base access control)
+Lock - if you want to prevent.
+RBAC - if you want to control.
+
+Service trust portal - centralized location for MS regulatory and data protection standards. Independent audit reports for MS cloud services.
+
+Compliance manager - is a wrokflow based risk assessment dashboard within trust portal that is used to track, assign and verify regular compliance activites.
+
+============= Managing and Deploying Azure resources  =================================================================================================================
+
+Azure portal - is the azure GUI, for deploying,managing and monitoring Azure resources.
+
+Azure cloud shell --->  2 types
+1) Power shell(windows), 2) BASH(Linux), also called Azure CLI
+	
+Azure ARC - Dashboard to see all the infrastructure available on azure cloud and on other clouds like aws,amazon. 
+ARM template - Azure resource manager. Describe the resources you want to use in a declarative JSON format. 
+			ARM template and azure blueprints are example of “infrastructure as code” deployment.
+Azure Blueprints applies policies in an automated fashion and ARM Templates allow you to deploy your resource as code. 
+Using the two together helps ensure that you’re deploying consistent, compliant resources.
+	
+============= Monitoring Tools =========================================================================================================================================
+
+AZURE ADVISOR - CROPS
+provides automated recommendations to improve reliability, security, performance, operational excellence, and costs.
+The recommendations are available via the Azure portal and the API, and you can set up notifications to alert you to new recommendations.
+It integrates with Azure Security Center to bring you security recommendations.
+
+AZURE SERVICE HEALTH - provides a personalized view of the health of the Azure services, regions, and resources you rely on.
+upcoming planned outages, and services that will be sunset. services which will be decommissioned.
+This is achieved with the help of - 
+Azure Status - The page is a global view of the health of all Azure services across all Azure regions.
+Service Health - best place to look for service impacting communications about outages, planned maintenance activities, and other health advisories 
+Resource Health - provides information about the health of your individual cloud resources, such as a specific virtual machine instance.
+
+AZURE MONITOR - Application insights, VM insights, container insights, Log analytics, smart alerts.
+monitor resources across multiple subscriptions.
+react to critical events in real time, through alerts delivered to teams via SMS, email, and so on. Or you can use thresholds to trigger 
+autoscaling functionality to scale to meet the demand.
+ 
+Azure AD is available in four editions: Azure AD Free, Office 365 Apps, Premium P1, and Premium P2.
+Azure Active Directory Business-to-Customer (B2C). B2C can help you provide identity and access management solutions for your customer-facing apps.
+				
+TAGS* ==================================================================================================================================================================
+
+Apply tags to resources to logically organize all the resources in your subscription. 
+Not all resources support tags.
+Tags for Resources are not inherited by default from their Resource Group.
+If you assign a tag to a resource group, all the resources in that resource group inherit the same tag -> NO
+If you assign a Permission to a resource group, all the resources in that resource group inherit the same permission -> YES
+
+DEVOPS* ================================================================================================================================================================
+
+3 elements of software team - Communication* Feedback* Automation*
+
+Continuous deployment - deployment to test environment
+Contiuous delivery - delivery to production environment
+
+Azure repos - private source control GIT.
+Azure pipeline - Orchestrate CI-CD pipeline, alternative is Github action
+Azure artifact - storing artificats generated by jenkins
+Azure Board - project management suite that includes Kanban boards, reporting, and tracking
+Azure DevOps - high-performance pipelines, free private Git repositories, Kanban boards, extensive automated and cloud-based load testing. 
+Azure test plan 
+
+Azure Resource manager (ARM) - Terraform is a neutral tool to provision resources into aws/azure/google in automated way using template approach.
+Similarly Azure provides ARM. It uses JSON template to create hardware resources in automated way like compute, database, storage and networking. 
+Declarative approach to IAAC. You can use CLI and powershell also. 
+Any action to any resource in azure go through ARM. Declarative approach to infrasture as a code.
+Define the dependencies between resources so they're deployed in the correct order Automatic rollback in case of failures.
+Apply access control to all services because RBAC is natively integrated into the management platform.
+Clarify your organization's billing by viewing costs for a group of resources that share the same tag.
+
+To install right software on provisioned resources - open source tools are chef, puppet, ansible.
+
+Once VM is created, we get option to download the json template from - 
+Azure portal(GUI), SDK(BASH, POWERSHELL ), REST CLIENTS --> Azure Resource Manager --> Azure Resources.
+
+Azure portal - Web based GUI . No automation possible
+Azure mobile app - mobile based.
+Azure powershell - Window based. but cross platform possible on window, linux, MacOS.
+Azure CLI - CLI based. but cross platform possible on window, linux, MacOS.
+Azure cloud shell - terminal to view both powershell and bash.
+
+DevTestLab - where you can provision resources, test your application, perform load test, provison 100s of VM, integrate with CI/CD
+				 		   
+----------Security-----------------------------------------------------------------------------------------------------------------------------------------------
+
+MIcrosoft defender for cloud (formarly called azure security center)
+1) cloud security posture management (CSPM) - Automate identification and remediation of security risk of your cloud configuration.
+2) cloud workload protection (CWP) - continuously monitor and fix threats to workload deployed in cloud.
+
+Azure Defender for Cloud, Advanced Features are NOT Free. However you can try them using the 30-day free trial.
+
+flow:
+continuous assessment ( get secure score ) -> secure (provide recommendation to improve secure score)-> defend
+
+2) Secure score - is a measurement of an organization's security posture. Your score is based on the percentage of security controls that you satisfy. 
+The more security controls you satisfy, the higher the score you receive.
+The common principles used to define a security posture are confidentiality, integrity, and availability, known as CIA.
+
+    
+4) Azure monitor workbooks - to automate responses to threats. 
+
+5) Azure key vaults - is used to store application Secrets Management, Key Management, Certificate Management.
+   service tiers: Standard, which encrypts with a software key.
+     Premium tier, which includes hardware security module(HSM)-protected keys.
+				  
+6) Azure Dedicated host - provides dedicated physical servers to host your Azure VMs for Windows and Linux.
+You cannot share the dedicated host with other subscriptions. Azure dedicated hosts are charged per dedicated host irrespective of how many VMs you run on it.
+
+Azure Application Gateway - also provides a firewall that's called the web application firewall (WAF). WAF provides centralized, 
+inbound protection for your web applications against common exploits and vulnerabilities.
+Azure Front Door and Azure Content Delivery Network also provide WAF services.
+
+perimeter layer - The perimeter layer is about protecting your organization's resources from network-based attacks.
+
+Microsoft defender for identity - protects against suspecious attacks and threats to the resources in azure account.
+
+
+
+
+
+
+Purchase Azure services that affect costs - types of Azure subscriptions
+free trial, pay as you go, member offers.
+
+how to purchase:
+Through an Enterprise Agreement, Directly from the web, Through a Cloud Solution Provider
+
+factors affecting cost - 
+Resource type, Usage meters, Resource usage
+
+spending limits - to restrict your spending or to prevent accidental overrun.
+Azure Reservations can save you up to 72 percent as compared to pay-as-you-go prices. With up-front commitment for 1-3 years can give discounts upto 72%.
+With Azure reserved instances of 1-3 years + hybrid benefit can give discounts upto 80%  
+Azure Reservations are available to customers with an Enterprise Agreement, Cloud Solution Providers, and pay-as-you-go subscriptions.
+
+Budgets - set a budget for your spending. scope of budget can be a resource group or subscription.
+
+Apply tags to identify cost owners - You can apply tags to groups of Azure resources to organize billing data.
+
+resize or shut down VMs that are underutilized or idle.
+Deallocate virtual machines during off hours
+Delete unused resources
+Migrate from IaaS to PaaS services
+Choose cost-effective operating systems
+
+--------- Hierarchy-----------------------------------------------------------------------------------------------------------------------------------------------------
+Mnagement group :
+10,000 management groups can be supported in a single directory.
+A management group tree can support up to six levels of depth. This limit doesn't include the root level or the subscription level.
+Each management group and subscription can support only one parent.
+All subscriptions in a management group automatically inherit the conditions applied to the management group.
+
+Azure Subscription - is the package you selected for azure whether it is free trial or paid.
+A subscription provides you with authenticated and authorized access to Azure products and services. 
+Subscription links Aazure account to its resources.
+An azure account can have multiple subscriptions.
+To manage cost for resources provisioned for diff teams, diff projects, diff business units.
+Subscription is managed by active directory account and not by a microsoft account.
+An Azure subscription has a trust relationship with Azure Active Directory. 
+A subscription trusts Azure AD to authenticate users, services, and devices.
+An Azure subscription is a logical unit of Azure services that links to an Azure account.
+A single Azure subscription can have up to 250 storage accounts per region, and each storage account can store up to 5 Petabytes. 
+There can be 25000 VMs per subscription.
+2 Subscriptions cannot be merged into one.
+It is possible to assign multiple administrators to a particular subscription, however there is ONLY 1 'account administrator'
+You can create hierarcy of management groups
+All subscriptions in a management group should be associated with same azure tenant.
+One resource group cannot be associated with Multiple Subscriptions
+
+subscription Types:
+free trial, pay as you go, azure students, standard support, developer support .. etc.
+
+How to purchase:
+Through an Enterprise Agreement
+Directly from the web
+Through a Cloud Solution Provider
+
+There are two types of subscription boundaries that you can use:
+1) Billing boundary: This subscription type determines how an Azure account is billed for using Azure. 
+You can create multiple subscriptions for different types of billing requirements. 
+Azure generates separate billing reports and invoices for each subscription so that you can organize and manage costs.
+2) Access control boundary: This billing model allows you to manage and control access to the resources that users provision with specific 
+   subscriptions.
+   
+Resource groups :
+Resource group is associated with a single subscription only.
+Resource group can have resources from multiple regions.
+Resource groups can't be nested. 
+A resource can only be a member of a single resource group. 
+Many resources can be moved between resource groups with some services having specific limitations or requirements to move. 
+Before any resource can be provisioned, you need a resource group for it to be placed in.
+Deleting resource group deletes all resources under it.
+Assigning tags to resource group does not assign tag to all resources under it.
+Permissions/roles assigned to user at resource group level are inherited by all resources under it.
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Calculate your projected costs by using the Pricing calculator and the Total Cost of Ownership (TCO) Calculator
+Azure Advisor identifies unused or underutilized resources and recommends unused resources that you can remove.
+Use spending limits to restrict your spending
+Azure Reservations can save you up to 72 percent as compared to pay-as-you-go prices
+Azure Cost Management + Billing is a free service that helps you understand your Azure bill, manage your account and subscriptions, monitor and control Azure spending, and optimize resource use.
+A common recommendation that you'll find from Azure Cost Management + Billing and Azure Advisor is to resize or shut down VMs that are underutilized or idle.
+Tags help you manage costs associated with the different groups of Azure products and resources.
+
+Serverless computing - Serverless computing enables developers to build applications faster by eliminating the need for them to manage infrastructure. 
+With serverless applications, the cloud service provider automatically provisions, scales, and manages the infrastructure required to run the code.
+In understanding the definition of server-less computing, it’s important to note that servers are still running the code. 
+
+
+
+Azure Government - is the mission-critical cloud, delivering breakthrough innovation to US government customers and their partners. 
+Only US federal, state, local, and tribal governments and their partners have access to this dedicated instance, with operations controlled by 
+screened US citizens.
+					  
+
+
+When you cancel an Azure subscription, the resources are initially deactivated but not deleted. A resource lock doesn't block canceling the 
+subscription. After a waiting period, the resources are permanently deleted. The resource lock doesn't prevent the permanent deletion of the resources.
+
+mIcrosoft Privacy statement - Where can the team access details about the personal data Microsoft processes and how the company processes it.
+Trust center - legal team access information around how the Microsoft cloud helps them secure sensitive data and comply with applicable laws and regulations.
+Azure compiance documentation - The compliance documentation provides reference blueprints, or policy definitions, for common standards that you can 
+apply to your Azure subscription.
+								
+Product terms site - TnC for online service products.
+Data protection ammendum - processing and security of customer data n personal data.
+azure informaiton protection - protect docs and emails
+								
+
+PCI DSS - For credit cards. Payment Card Industry Data Security Standard
+HIPPA - The Health Insurance Portability and Accountability Act of 1996.
+FedRAMP - The Federal Risk and Authorization Management Program (FedRAMP) is a US government-wide program that provides a standardized approach  
+to security assessment, authorization, and continuous monitoring for cloud products and services.
+ISO - The International Organization for Standardization. It is comprised by representatives from multiple nations.
+NIST - An organization that defines the standards used by the US govt. The National Institute of Standards and Technology (NIST)
+GDPR - standard or regulation enforced by governing agency for data protection.
+DPA - Data protection ammendum. A document that defines the terms on how data in general is processed n protected.
+CAL - Client access license. A right of the user to access the licensed software components of the server.
+OST - Online service terms. the terms of how you can use subscribed, public n generally available MS online services are defined in OST.
+PST - Preview supplimental terms. Azure features which are still in beta phase.
+
+
+Azure information protection - encryption and security of documents and emails
+
+Azure business continuity and disaster recovery (BCDR) strategy :
+Site recovery - Azure Site Recovery provides FAULT TOLERANCE for Virtual Machines. Replicates workloads running on physical and virtual machines (VMs) 
+from a primary site to a secondary location. When an outage occurs at your primary site, you fail over to secondary location
+Backup service - The Azure Backup service keeps your data safe and recoverable. Site Recovery can manage replication for:
+Azure VMs replicating between Azure regions. On-premises VMs, Azure Stack VMs, and physical servers.
+		
+
+
+
+
+
+services:
+basic, premium. 99.9% availability.
+
+Provides:
+Application management, Authentication, Azure AD for developers, B2B, B2C, conditional access,Device managemet, Reports and monitoring, SSO,
+Multi-Factor Authentication, custom banned password list, and smart lockout, Hybrid identity, Azure Active Directory Connect and Connect Health 
+to provide a single user identity for authentication and authorization to all resources, regardless of location
+
+Azure Active Directory preview programs : 
+Private Preview - few customers are given early access to test the service. You have to apply in order to test the service. No formal support provided.
+Public Preview - Anyone can use the service but it is not for production use. formal support provided by microsoft.
+General availability(GA) - It is released to all customers as a production-ready service. formal support provided by microsoft.
+
+Tenant - represents an entire organization.You create a tenant for your organization so that your internal users can be managed by Azure AD.
+Identity score - It's a percentage between 1 and 100 that indicates how aligned your security is with Microsoft best practices.
+
+Azure support plans - 
+1) basic - no phone or email support. 
+2) developer - Trial n non-prod env, email support only during business hrs, 8 HR SLA for SEV C
+3) standard - prod env, 24/7 support, 8 hr minimal impact for SEV C, 4 hr moderate impact for SEV B, 1 hr critical impact for SEV A
+4) professional direct - Business critical env, 24/7 support, 4 hr minimal impact for SEV C, 2 hr moderate impact for SEV B, 1 hr critical impact for SEV A, 
+   pool of ProDirect delivery managers.
+   
